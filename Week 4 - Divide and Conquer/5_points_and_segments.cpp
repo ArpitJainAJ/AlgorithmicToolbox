@@ -3,25 +3,18 @@
 #include<algorithm>
 using namespace std;
 
-int binary_search(int a[], int x, int n, int& found) {
-  int left = 0, right = n ,mid=(left+right)/2, more_than=-1; 
+int count(int arr[], int x, int n){
+	int *l=lower_bound(arr,arr+n,x);
+	int *h=upper_bound(arr,arr+n,x);
+	return high-low;
+}
+
+int binary_search(int a[], int x, int left, int right, int& found) {
+  int mid=(left+right)/2, more_than=-1; 
   //write your code here
 	while(left<=right){
 		if(a[mid]==x){
-			found=1;
-			int mid2=mid;
-			while(mid<n){
-				if(a[mid]==a[mid+1]){
-					++mid;
-					++found;
-				}
-				else
-					break;
-			}
-			while(mid2>0){
-				if(a[mid2]==a[mid2-1])
-					--mid2;
-					++found;
+			found=count(a,x,right-left);
 			}
 			return mid;
 		}
@@ -41,14 +34,14 @@ int binary_search(int a[], int x, int n, int& found) {
 void fast_count_segments(int starts[], int ends[], vector<int> points, int n) {
 	for(size_t i=0;i<points.size();++i){
 		int found_a=0,found_b=0;
-		int a=binary_search(starts,points[i],n, found_a);
+		int a=binary_search(starts,points[i],0, n, found_a);
 		if(a==-1){
 			//cout<<"a: "<<a<<", ";
 			//cout<<0<<endl;
 			cout<<0<<" ";
 			continue;
 		}
-		int b=binary_search(ends,points[i],n, found_b);
+		int b=binary_search(ends,points[i],0, n, found_b);
 		//cout<<"a: "<<a<<" found-"<<found_a<<",b: "<<b<<" found-"<<found_b<<", ";
 		int count=a+1;
 		if(found_b<=0)
