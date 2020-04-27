@@ -21,12 +21,12 @@ inline void showpoints(points& a){
 
 inline bool compare(points& a, points& b){
 	if(a.x==b.x)
-		return a.y<b.y;
+		return a.y<=b.y;
 	else
-		return a.x<b.x;
+		return a.x<=b.x;
 }
 
-inline long long int distance(points&a, points&b){
+inline long long int distance(points& a, points& b){
 	/*cout<<"Finding distance between points ";
 	showpoints(a);
 	cout<<" and ";
@@ -38,17 +38,15 @@ inline long long int distance(points&a, points&b){
 	return (a.x-b.x)*(a.x-b.x) + (a.y-b.y)*(a.y-b.y);
 }
 
-inline long long int naive_minimal_distance(points xy[], int l, int r){
-	long long int d= numeric_limits<long long int>().max();
+inline void naive_minimal_distance(points xy[], int l, int r, long long int& d){
 	for(int i=l; i<r;++i){
 		for(int j=i+1;j<=r;++j){
 			d=min(d,distance(xy[i],xy[j]));
 		}
 	}
-	return d;
 }
 
-inline long long int strip_minimal_distance(points xy[], int l, int r, long long int d){
+inline void strip_minimal_distance(points xy[], int l, int r, long long int& d){
 	while(l<r){
 		for(int i=l+1;i<=r;++i){
 			if(abs(xy[i].y-xy[l].y)<d)
@@ -57,16 +55,16 @@ inline long long int strip_minimal_distance(points xy[], int l, int r, long long
 		}
 		++l;
 	}
-	return d;
 }
 
-inline long long int minimal_distance(points xy[], int l, int r) {
-	if(r-l<=3)
-		return naive_minimal_distance(xy,l,r);
+inline void minimal_distance(points xy[], int l, int r, long long int& d) {
+	if(r-l<=2){
+		naive_minimal_distance(xy,l,r,d);
+		return;
+	}
 	int mid=(l+r)/2;
-	long long int d1=minimal_distance(xy, l, mid+1);
-	long long int d2=minimal_distance(xy, mid+1, r);
-	long long int d=min(d1, d2);
+	minimal_distance(xy, l, mid,d);
+	minimal_distance(xy, mid, r,d);
 
 	int i=mid-1,j=mid+1;
 	while(i>=l){
@@ -79,7 +77,7 @@ inline long long int minimal_distance(points xy[], int l, int r) {
 			++j;
 		break;
 	}
-	return min(d, strip_minimal_distance(xy, i+1, j-1, d));
+	strip_minimal_distance(xy, i+1, j-1, d);
 }
 
 int main() {
@@ -96,6 +94,8 @@ int main() {
 		cout<<endl;
 	}
 	*/
+	long long int d = numeric_limits<long long int>().max();
+	minimal_distance(arr,0,n-1,d);
   cout << fixed;
-  cout << setprecision(9) << sqrt(minimal_distance(arr,0,n-1)) << "\n";
+  cout << setprecision(9) << sqrt(d) << "\n";
 }
