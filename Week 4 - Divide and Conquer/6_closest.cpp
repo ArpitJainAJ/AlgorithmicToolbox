@@ -1,5 +1,7 @@
 #include <algorithm>
 #include <iostream>
+#include <sstream>
+#include <iomanip>
 #include <vector>
 #include <string>
 #include <cmath>
@@ -10,7 +12,7 @@ using namespace std;
 
 class points{
 public:
-	int x,y;
+	long long int x,y;
 };
 
 inline void showpoints(points& a){
@@ -24,21 +26,20 @@ inline bool compare(points& a, points& b){
 		return a.x<b.x;
 }
 
-inline double distance(points&a, points&b){
+inline long long int distance(points&a, points&b){
 	/*cout<<"Finding distance between points ";
 	showpoints(a);
 	cout<<" and ";
 	showpoints(b);
-	double d = sqrt( pow((double)(a.x-b.x),2) + pow((double)(a.y-b.y),2) );
-	cout<<" d= "<<d<<endl;
+	long long d =(a.x-b.x)*(a.x-b.x) + (a.y-b.y)*(a.y-b.y);
+	cout<<" d = sqrt("<<d<<")"<<endl;
 	return d;
 	*/
-	return sqrt( pow((double)(a.x-b.x),2) + pow((double)(a.y-b.y),2) );
+	return (a.x-b.x)*(a.x-b.x) + (a.y-b.y)*(a.y-b.y);
 }
 
-inline double naive_minimal_distance(points xy[], int l, int r){
-	//double d=numeric_limits<double>max();
-	double d= DBL_MAX;
+inline long long int naive_minimal_distance(points xy[], int l, int r){
+	long long int d= numeric_limits<long long int>().max();
 	for(int i=l; i<r;++i){
 		for(int j=i+1;j<=r;++j){
 			d=min(d,distance(xy[i],xy[j]));
@@ -47,10 +48,10 @@ inline double naive_minimal_distance(points xy[], int l, int r){
 	return d;
 }
 
-inline double strip_minimal_distance(points xy[], int l, int r, double d){
+inline long long int strip_minimal_distance(points xy[], int l, int r, long long int d){
 	while(l<r){
 		for(int i=l+1;i<=r;++i){
-			if(xy[i].y-xy[l].y<d)
+			if(abs(xy[i].y-xy[l].y)<d)
 				d=min(d, distance(xy[i],xy[l]));
 			break;
 		}
@@ -59,16 +60,15 @@ inline double strip_minimal_distance(points xy[], int l, int r, double d){
 	return d;
 }
 
-inline double minimal_distance(points xy[], int l, int r) {
-  //write your code here
-	if(r-l<=2)
+inline long long int minimal_distance(points xy[], int l, int r) {
+	if(r-l<=3)
 		return naive_minimal_distance(xy,l,r);
 	int mid=(l+r)/2;
-	double d1=minimal_distance(xy, l, mid);
-	double d2=minimal_distance(xy, mid+1, r);
-	double d=min(d1, d2);
+	long long int d1=minimal_distance(xy, l, mid+1);
+	long long int d2=minimal_distance(xy, mid+1, r);
+	long long int d=min(d1, d2);
 
-	int i=mid,j=mid;
+	int i=mid-1,j=mid+1;
 	while(i>=l){
 		if(xy[i].x==xy[mid].x)
 			--i;
@@ -79,7 +79,7 @@ inline double minimal_distance(points xy[], int l, int r) {
 			++j;
 		break;
 	}
-	return min(d, strip_minimal_distance(xy, i, j, d));
+	return min(d, strip_minimal_distance(xy, i+1, j-1, d));
 }
 
 int main() {
@@ -97,5 +97,5 @@ int main() {
 	}
 	*/
   cout << fixed;
-  cout << setprecision(9) << minimal_distance(arr,0,n-1) << "\n";
+  cout << setprecision(9) << sqrt(minimal_distance(arr,0,n-1)) << "\n";
 }
